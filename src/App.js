@@ -1,16 +1,22 @@
+import { ThemeProvider } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Navbar from "./components/organism/navbar";
 import About from "./pages/about";
 import Home from "./pages/home";
-import { getAll } from "./services/tmdbService";
+import customTheme from "./styles/theme";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={customTheme}>
+      <BrowserRouter>
+        <Navbar>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+        </Navbar>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
