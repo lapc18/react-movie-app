@@ -7,6 +7,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { nanoid } from "@reduxjs/toolkit";
 import { ListItemLink } from "../../atoms/list-item-link/ListItemLink";
+import PropTypes from "prop-types";
 
 export const AppDrawer = ({ isOpen = false, onClose }) => {
   const items = (
@@ -40,3 +41,8 @@ const drawerItems = () => [
     icon: <FavoriteIcon />,
   },
 ];
+
+AppDrawer.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func
+}
