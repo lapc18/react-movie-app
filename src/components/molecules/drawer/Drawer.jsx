@@ -4,6 +4,7 @@ import {
   List,
 } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { nanoid } from "@reduxjs/toolkit";
 import { ListItemLink } from "../../atoms/list-item-link/ListItemLink";
 
@@ -31,5 +32,11 @@ const drawerItems = () => [
     text: "Home",
     to: "/",
     icon: <HomeIcon />,
+  },
+  {
+    id: nanoid(),
+    text: "Favorites",
+    to: "/favorites",
+    icon: <FavoriteIcon />,
   },
 ];
