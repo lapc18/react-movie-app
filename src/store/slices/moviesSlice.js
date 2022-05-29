@@ -13,11 +13,12 @@ export const fetchMovies = createAsyncThunk(
   async ({ page = 1, language = "en-US" }, thunkApi) => {
     const res = await getAll({ page: page, language: language });
     const movies = res.map((movie) => {
-      const { id, overview, release_date, title, poster_path, popularity } =
+      const { id, overview, release_date, title, poster_path, vote_average } =
         movie;
       const poster = `https://image.tmdb.org/t/p/w500${poster_path}`;
       const releaseDate = release_date;
-      return { id, overview, releaseDate, title, poster, popularity };
+      const rating = vote_average;
+      return { id, overview, releaseDate, title, poster, rating };
     });
     return movies;
   }
