@@ -10,8 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import moment from 'moment';
 
-export const MovieItem = ({ title, releaseDate, poster, onDetailClick }) => {
+export const MovieItem = ({ title, releaseDate, poster, rating, onDetailClick }) => {
+  releaseDate = moment(releaseDate).format('YYYY');
   return (
     <Grid item xs={3} sm={6} md={2} sx={{ p: 0.1 }}>
       <Card variant="outlined" sx={{ width: 265, borderRadius: 4 }}>
@@ -26,7 +28,7 @@ export const MovieItem = ({ title, releaseDate, poster, onDetailClick }) => {
             {title}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
-            {releaseDate}
+            Release: {releaseDate} | Rating: {rating}
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
@@ -41,5 +43,6 @@ MovieItem.propTypes = {
   title: PropTypes.string.isRequired,
   releaseDate: PropTypes.string.isRequired,
   poster: PropTypes.string.isRequired,
+  rating: PropTypes.number.isRequired,
   onDetailClick: PropTypes.func
 };
