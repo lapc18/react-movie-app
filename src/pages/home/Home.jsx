@@ -13,6 +13,7 @@ export const Home = () => {
   const state = useSelector((state) => state.movie);
   const [movies, setMovies] = useState(state.movies);
   const [searchText, setSearchText] = useState("");
+  const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   const views = VIEWS;
   const initialView = views[0].value;
@@ -28,15 +29,19 @@ export const Home = () => {
       dispatch(fetchMovies({ page: 1, language: "us-US" }));
     } else if (searchText !== value) {
       dispatch(
-        fetchMoviesByQuery({ query: value, page: 1, language: "us-US" })
+        fetchMoviesByQuery({ query: value, page: page, language: "us-US" })
       );
     }
     setSearchText(value);
   };
 
+  const onPageChange = (page) => {
+    setPage(page);
+  }
+
   useEffect(() => {
-    dispatch(fetchMovies({ page: 1, language: "us-US" }));
-  }, [dispatch]);
+    dispatch(fetchMovies({ page: page, language: "us-US" }));
+  }, [dispatch, page]);
 
   useEffect(() => {
     const onViewChange = (value) => {
@@ -70,7 +75,7 @@ export const Home = () => {
         />
         <SearchBox onSearch={onSearch} />
       </Box>
-      <MovieGrid movies={movies} value={searchText} />
+      <MovieGrid movies={movies} value={searchText} onPageChange={onPageChange} page={page} count={state.movies.length} />
     </>
   );
 };
