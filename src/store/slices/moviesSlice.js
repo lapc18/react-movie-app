@@ -17,6 +17,7 @@ const initialState = {
     list: [],
     totalPages: 0,
   },
+  currentView: "movies",
   isError: false,
   isLoading: false,
 };
@@ -99,6 +100,9 @@ const moviesSlice = createSlice({
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+    setCurrentView: (state, action) => {
+      state.currentView = action.payload;
+    },
     searchFavoriteMovies: (state, action) => {
       const { payload } = action;
       state.favoritesFiltered = [
@@ -169,5 +173,6 @@ export const {
   searchFavoriteMovies,
   setLoading,
   getFavoriteMovies,
+  setCurrentView,
 } = moviesSlice.actions;
 export default moviesSlice.reducer;

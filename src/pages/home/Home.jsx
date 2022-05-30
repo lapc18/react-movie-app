@@ -9,6 +9,7 @@ import {
   fetchMoviesByQuery,
   searchFavoriteMovies,
   getFavoriteMovies,
+  setCurrentView,
 } from "../../store/slices/moviesSlice";
 import { view } from "../../models/movies";
 
@@ -16,16 +17,15 @@ export const Home = () => {
   const state = useSelector((state) => state.movie);
   const [movies, setMovies] = useState(state.movies.list);
   const [searchText, setSearchText] = useState("");
-  const [currentView, setCurrentView] = useState("");
+  const currentView = state.currentView;
   const [pagesCount, setPagesCount] = useState(state.movies.totalPages);
   const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   const views = view;
-  const initialView = views[0].value;
 
   const onViewChange = (value) => {
     const result = state[value].list ?? [];
-    setCurrentView(value);
+    dispatch(setCurrentView(value));
     setMovies(result);
     setPagesCount(result.pagesCount);
   };
@@ -34,12 +34,10 @@ export const Home = () => {
     if (value === "") {
       dispatch(getFavoriteMovies());
       setMovies(state.favorites.list);
-    } else 
-    if (searchText !== value) {
+    } else if (searchText !== value) {
       const result = state.favoritesFiltered;
       dispatch(dispatch(searchFavoriteMovies(value)));
       setMovies(result);
-      console.log('movies searched',movies)
     }
   };
 
@@ -69,15 +67,13 @@ export const Home = () => {
 
   useEffect(() => {
     const onViewChange = (value) => {
-      const result = state[value].list ?? [];
+      const result = value.includes("movies") ? state.movies.list : state.favorites.list;
       setMovies(result);
-      setCurrentView(value);
-      setPagesCount(result.pagesCount);
+      dispatch(setCurrentView(value));
+      setPagesCount(state.pagesCount);
     };
-    currentView.length === 0
-      ? onViewChange(initialView)
-      : onViewChange(currentView);
-  }, [state, initialView, currentView]);
+    onViewChange(currentView);
+  }, [state.movies.list, state.favorites.list, state.pagesCount, currentView, dispatch]);
 
   return (
     <>
@@ -97,7 +93,7 @@ export const Home = () => {
         }}
       >
         <ViewSelector
-          initialView={initialView}
+          initialView={currentView}
           views={views}
           onViewChange={onViewChange}
         />
