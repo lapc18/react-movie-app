@@ -16,3 +16,8 @@ export const getAllByQuery = async ({query = "", page = 1, language = 'en-US'}) 
     const response = await httpCommon.get(`/search/movie?language=${language}&page=${page}&query=${query}&include_adult=true`);
     return response.data;
 }
+
+export const getMovieDetail = async ({id = "", language = 'en-US'}) => {
+    const response = await httpCommon.get(`/movie/${id}?language=${language}`);
+    return response.data;
+}

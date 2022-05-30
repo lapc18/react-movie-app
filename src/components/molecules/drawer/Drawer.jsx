@@ -36,8 +36,8 @@ const drawerItems = () => [
   },
   {
     id: nanoid(),
-    text: "Favorites",
-    to: "/favorites",
+    text: "About",
+    to: "/about",
     icon: <FavoriteIcon />,
   },
 ];

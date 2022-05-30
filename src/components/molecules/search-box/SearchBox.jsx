@@ -9,7 +9,7 @@ import MovieIcon from "@mui/icons-material/Movie";
 export const SearchBox = ({ onSearch, placeholder = "Search", value }) => {
 
   const onInputChange = (value) => {
-    onSearch && onSearch(value);
+    onSearch(value);
   }
 
   return (

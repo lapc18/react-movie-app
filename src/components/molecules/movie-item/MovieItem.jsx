@@ -9,11 +9,18 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-import moment from 'moment';
+import OpenInFullIcon from "@mui/icons-material/OpenInFull";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
-export const MovieItem = ({ title, releaseDate, poster, rating, onDetailClick }) => {
-  releaseDate = moment(releaseDate).format('YYYY');
+export const MovieItem = ({ id, title, releaseDate, poster, rating }) => {
+  const navigation = useNavigate();
+
+  const onDetailClick = () => {
+    navigation(`/detail/${id}`);
+  };
+
+  releaseDate = moment(releaseDate).format("YYYY");
   return (
     <Grid item xs={3} sm={6} md={2} sx={{ p: 0.1 }}>
       <Card variant="outlined" sx={{ width: 265, borderRadius: 4 }}>
@@ -32,7 +39,13 @@ export const MovieItem = ({ title, releaseDate, poster, rating, onDetailClick })
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <Button variant="text" startIcon={<OpenInFullIcon />} onClick={() => onDetailClick && onDetailClick()}>See details</Button>
+          <Button
+            variant="text"
+            startIcon={<OpenInFullIcon />}
+            onClick={() => onDetailClick()}
+          >
+            See details
+          </Button>
         </CardActions>
       </Card>
     </Grid>
@@ -40,9 +53,9 @@ export const MovieItem = ({ title, releaseDate, poster, rating, onDetailClick })
 };
 
 MovieItem.propTypes = {
+  id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   releaseDate: PropTypes.string.isRequired,
   poster: PropTypes.string.isRequired,
   rating: PropTypes.number.isRequired,
-  onDetailClick: PropTypes.func
 };

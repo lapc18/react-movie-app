@@ -1,10 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAll, getAllByQuery } from "../../services/tmdbService";
+import {
+  getAll,
+  getAllByQuery,
+  getMovieDetail,
+} from "../../services/tmdbService";
+import { moviesFromLocalStorage } from "../../utils/local-movies";
 
 const initialState = {
-  moviesFiltered: [],
-  movies: [],
-  favorites: [],
+  currentMovie: {},
+  favoritesFiltered: [],
+  movies: {
+    list: [],
+    totalPages: 0,
+  },
+  favorites: {
+    list: [],
+    totalPages: 0,
+  },
   isError: false,
   isLoading: false,
 };
@@ -53,41 +65,72 @@ export const fetchMoviesByQuery = createAsyncThunk(
   }
 );
 
+export const fetchMovieDetail = createAsyncThunk(
+  "movies/fetchMovieDetail",
+  async ({ query, language = "en-US" }, thunkApi) => {
+    const res = await getMovieDetail({ id: query, language });
+    const { id, overview, release_date, title, poster_path, vote_average } =
+      res;
+    const poster = `https://image.tmdb.org/t/p/w500${poster_path}`;
+
+    return {
+      id,
+      overview,
+      title,
+      poster,
+      releaseDate: release_date,
+      rating: vote_average,
+    };
+  }
+);
+
 const moviesSlice = createSlice({
   name: "movies",
   initialState,
   reducers: {
     addFavoriteMovie: (state, action) => {
-      state.favorites.push({ ...action.payload });
+      state.favorites.list.push({ ...action.payload });
     },
     removeFavoriteMovie: (state, action) => {
-      state.favorites = [
-        ...state.favorites.filter((movie) => movie.id !== action.payload),
+      state.favorites.list = [
+        ...state.favorites.list.filter((movie) => movie.id !== action.payload),
       ];
     },
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
-    searchMovies: (state, action) => {
-      const { view, text } = action;
-      state.moviesFiltered = [
-        ...state[view].filter(
+    searchFavoriteMovies: (state, action) => {
+      const { payload } = action;
+      state.favoritesFiltered = [
+        ...state.favorites.list.filter(
           (movie) =>
-            movie.title.toLowerCase().includes(text) ||
-            movie.releaseDate.toLowerCase().includes(text) ||
-            movie.rating.toString().toLowerCase().includes(text)
+            movie.title.toLowerCase().includes(payload) ||
+            movie.releaseDate.toLowerCase().includes(payload) ||
+            movie.rating.toString().toLowerCase().includes(payload)
         ),
       ];
+    },
+    getFavoriteMovies: (state, action) => {
+      state.favorites.list = [...moviesFromLocalStorage()];
+      const totalPages = state.favorites.length > 0 ? Math.ceil(state.favorites.list.length / 20) : 1;
+      state.favorites.totalPages = totalPages;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
-      state.movies = [...action.payload["movies"]];
+      state.movies.list = [...action.payload["movies"]];
+      state.movies.totalPages = action.payload["totalPages"];
       state.isLoading = false;
     });
 
     builder.addCase(fetchMoviesByQuery.fulfilled, (state, action) => {
-      state.movies = [...action.payload["movies"]];
+      state.movies.list = [...action.payload["movies"]];
+      state.totalPages = action.payload["totalPages"];
+      state.isLoading = false;
+    });
+
+    builder.addCase(fetchMovieDetail.fulfilled, (state, action) => {
+      state.currentMovie = { ...action.payload };
       state.isLoading = false;
     });
 
@@ -96,6 +139,10 @@ const moviesSlice = createSlice({
     });
 
     builder.addCase(fetchMovies.pending, (state, action) => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(fetchMovieDetail.pending, (state, action) => {
       state.isLoading = true;
     });
 
@@ -108,13 +155,19 @@ const moviesSlice = createSlice({
       state.isError = true;
       state.isLoading = false;
     });
+
+    builder.addCase(fetchMovieDetail.rejected, (state, action) => {
+      state.isError = true;
+      state.isLoading = false;
+    });
   },
 });
 
 export const {
   addFavoriteMovie,
   removeFavoriteMovie,
-  searchMovies,
+  searchFavoriteMovies,
   setLoading,
+  getFavoriteMovies,
 } = moviesSlice.actions;
 export default moviesSlice.reducer;
