@@ -22,8 +22,8 @@ export const MovieItem = ({ id, title, releaseDate, poster, rating }) => {
 
   releaseDate = moment(releaseDate).format("YYYY");
   return (
-    <Grid item xs={3} sm={6} md={2} sx={{ p: 0.1 }}>
-      <Card variant="outlined" sx={{ width: 265, borderRadius: 4 }}>
+    <Grid item xs={4} sm={4} md={2} sx={{ p: 0.1, display: "flex" }} >
+      <Card variant="outlined" sx={{  borderRadius: 4 }}>
         <CardMedia
           sx={{ width: "100%", margin: "auto", objectFit: "contain" }}
           component="img"

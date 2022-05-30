@@ -10,9 +10,12 @@ export const MovieGrid = ({ movies, onPageChange, count = 1, page = 1 }) => {
     <>
       <Grid
         container
-        justifyContent={"center"}
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
+        spacing={{ sm: 0.6 }}
+        columns={{ xs: 4, sm: 12, md: 10 }}
+        style={{
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
       >
         {movies.map((movie) => (
           <MovieItem key={movie.id} {...movie} />
