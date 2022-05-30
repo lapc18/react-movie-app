@@ -8,6 +8,11 @@ import httpCommon from "../common/http-common";
  * @description This is a release type query that looks for all movies that have a release type of 2 or 3 within the specified date range.
  */
 export const getAll = async ({page = 1, language = 'en-US'}) => {
-    const response = await httpCommon.get(`/now_playing?language=${language}&page=${page}`);
-    return response.data['results'];
+    const response = await httpCommon.get(`/movie/now_playing?language=${language}&page=${page}`);
+    return response.data;
+}
+
+export const getAllByQuery = async ({query = "", page = 1, language = 'en-US'}) => {
+    const response = await httpCommon.get(`/search/movie?language=${language}&page=${page}&query=${query}&include_adult=true`);
+    return response.data;
 }
